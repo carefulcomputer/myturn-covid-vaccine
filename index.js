@@ -27,7 +27,6 @@ async function clickLinkOrButton(frame, selector) {
 }
 
 async function enterText(page, selector, textToEnter) {
-  //console.log('text to enter: ' + textToEnter );
   await page.waitForSelector(selector, { visible: true, timeout: 10000 })
   const textBox = await page.$(selector);
   await page.hover(selector)
@@ -36,7 +35,7 @@ async function enterText(page, selector, textToEnter) {
   await page.keyboard.type(textToEnter);
 }
 
-const checkForEach = async (browser, industry, county, zip, final_address) => {
+const checkForEach = async (browser, agegroup, industry, county, zip, final_address) => {
   let page = await browser.newPage();
   await page.setDefaultNavigationTimeout(20000);
   await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36');
@@ -53,7 +52,6 @@ const checkForEach = async (browser, industry, county, zip, final_address) => {
         if (!locationResp.eligible) {
           console.log('Not eligible for ' + industry + ' ' + county);
           shouldProceed = false;
-          //await page.close();
         }
       } else if (response.url().indexOf('availability') > -1 && response.url().indexOf('https://api.myturn.ca.gov/public/locations') > -1 && response.request().method() == "POST") {
         // checking if slot available
@@ -68,7 +66,6 @@ const checkForEach = async (browser, industry, county, zip, final_address) => {
         } else {
           console.log('No slots found for ' + industry + ' ' + county)
         }
-        //await page.close();
       }
     });
     await page.goto('https://myturn.ca.gov/', { waitUntil: 'networkidle2' });
@@ -81,7 +78,7 @@ const checkForEach = async (browser, industry, county, zip, final_address) => {
     await clickLinkOrButton(page, 'input[name="q-screening-18-yr-of-age"]');
     await clickLinkOrButton(page, 'input[name="q-screening-health-data"]');
     await clickLinkOrButton(page, 'input[name="q-screening-privacy-statement"]');
-    await clickLinkOrButton(page, 'input[value="16 - 49"]');
+    await clickLinkOrButton(page, 'input[value="' + agegroup +'"]');
     await page.select("select#q-screening-eligibility-industry", industry);
     await page.select("select#q-screening-eligibility-county", county);
     await clickLinkOrButton(page, 'button[data-testid="continue-button"]');
@@ -142,6 +139,7 @@ const actionFunc = async (toCheck) => {
 
 
   } catch (error) {
+    // error handling
     //console.log("Error getting vaccine eligibility");
     console.log(error);
   }
@@ -149,14 +147,11 @@ const actionFunc = async (toCheck) => {
 };
 
 (async () => {
-  
-  // enter all relevent locations which apply to you. 
   const toCheck = [
-    ['Healthcare Worker', 'San Luis Obispo', '93433', 'Grover Beach, CA 93433, USA'],
-    ['Healthcare Worker', 'Santa Clara', '94043', 'Mountain View, CA 94043, USA'],
-    ['Education and childcare', 'Santa Clara', '94043', 'Mountain View, CA 94043, USA'],
-    ['Communications and IT', 'Alameda', '94555', 'Fremont, CA 94555, USA'],
-    ['Communications and IT', 'Santa Clara', '94043', 'Mountain View, CA 94043, USA']
-  ]
+    ['16 - 49', 'Healthcare Worker', 'San Luis Obispo', '93433', 'Grover Beach, CA 93433, USA'],
+    ['16 - 49', 'Healthcare Worker', 'Santa Clara', '94043', 'Mountain View, CA 94043, USA'],
+    ['16 - 49', 'Communications and IT', 'Santa Clara', '94043', 'Mountain View, CA 94043, USA'],
+  ];
+
   await actionFunc(toCheck);
 })();
