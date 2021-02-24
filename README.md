@@ -3,7 +3,7 @@ Puppeteer script to find available slots for covid-19 vaccine at myturn.ca.gov
 
 Steps to run (assuming you have nodejs already installed)
 
-1. Manually check the availablibility but carefully note down exact values you enter/select on each page (case sensitive). You will use them later in editing the script.
+1. Manually check the availablibility on myturn.ca.gov website but carefully note down exact values you enter/select on each page (case sensitive). You will use them later in editing the script.
   1. On first page note down age group (e.g. '16 - 49'), business/industry(e.g. 'Communications and IT') and county ('San Luis Obispo')
   1. On second page note down zip code you are entering, and the location it shows relevent to you.
 1.  Clone this repo in a new folder.
