@@ -99,7 +99,15 @@ const checkForEach = async (browser, agegroup, industry, county, zip, final_addr
       if (whichPage == nextBtnSelector) {
       // if yes
         await page.waitForSelector(nextBtnSelector, { visible: true, timeout: 10000 })
-        const allLocationButtons = await page.$$(nextBtnSelector);
+        let allLocationButtons = await page.$$(nextBtnSelector);
+
+        for (let i=0; i<allLocationButtons.length; i++) {
+          await allLocationButtons[i].click();
+          await page.waitForTimeout(1000); // wait for api call to finish for slots
+          await clickLinkOrButton(page, 'button[data-testid="back-button"]');
+          allLocationButtons = await page.$$(nextBtnSelector);
+        }
+
         for (const currentLocationButton of allLocationButtons) {
           await currentLocationButton.click();
           await page.waitForTimeout(1000); // wait for api call to finish for slots
